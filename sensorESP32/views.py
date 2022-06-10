@@ -15,23 +15,30 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def sensor_data_list(request):
     if request.method =='GET':
         reading_data = SensorReading.objects.all()
         serializer = SensorDataSerializer(reading_data, many=True)
         return Response(serializer.data)
+    elif request.method =="POST":
+        serializer = SensorDataSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @api_view(['GET', 'DELETE', 'POST'])
 def sensor_data_detail(request, pk):
-    try: 
-        readings = SensorReading.objects.get(pk=pk) 
-    except SensorReading.DoesNotExist: 
-        return JsonResponse({'message': 'The tutorial does not exist'},\
-             status=status.HTTP_404_NOT_FOUND) 
+    # try: 
+    #     readings = SensorReading.objects.get(pk=pk) 
+    # except SensorReading.DoesNotExist: 
+    #     return JsonResponse({'message': 'The tutorial does not exist'},\
+    #          status=status.HTTP_404_NOT_FOUND) 
     
     if request.method == 'GET': 
+        readings = SensorReading.objects.get(pk=pk)
         sensor_data_serializer = SensorDataSerializer(readings) 
         return JsonResponse(sensor_data_serializer.data) 
 
@@ -52,8 +59,8 @@ def sensor_data_detail(request, pk):
         serializer = SensorDataSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'key': 'value'}, status=status.HTTP_200_OK)
-        return Response({'key': 'value'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def crop_recommendation(request):
@@ -98,49 +105,49 @@ def crop_recommendation(request):
 
         crop_name = str()
         if prediction == 0:                                                                                          
-            crop_name = 'Apple(सेब)'
+            crop_name = 'Gladiola'
         elif prediction == 1:
-            crop_name = 'Banana(केला)'
+            crop_name = 'Rose'
         elif prediction == 2:
-            crop_name = 'Blackgram(काला चना)'
+            crop_name = 'Marigold'
         elif prediction == 3:
-            crop_name = 'Chickpea(काबुली चना)'
+            crop_name = 'Dahlia'
         elif prediction == 4:
-            crop_name = 'Coconut(नारियल)'
+            crop_name = 'Lily'
         elif prediction == 5:
-            crop_name = 'Coffee(कॉफ़ी)'
+            crop_name = 'Cauliflower'
         elif prediction == 6:
-            crop_name = 'Cotton(कपास)'
+            crop_name = 'Potato'
         elif prediction == 7:
-            crop_name = 'Grapes(अंगूर)'
+            crop_name = 'Tomato'
         elif prediction == 8:
-            crop_name = 'Jute(जूट)'
+            crop_name = 'Onion'
         elif prediction == 9:
-            crop_name = 'Kidneybeans(राज़में)'
+            crop_name = 'Cabbage'
         elif prediction == 10: 
-            crop_name = 'Lentil(मसूर की दाल)'
+            crop_name = 'Apple'
         elif prediction == 11:
-            crop_name = 'Maize(मक्का)'
+            crop_name = 'Grapes'
         elif prediction == 12:
-            crop_name = 'Mango(आम)'
+            crop_name = 'Orange'
         elif prediction == 13:
-            crop_name = 'Mothbeans(मोठबीन)'
+            crop_name = 'Blackberry'
         elif prediction == 14:
-            crop_name = 'Mungbeans(मूंग)'
+            crop_name = 'Strawberry'
         elif prediction == 15:
-            crop_name = 'Muskmelon(खरबूजा)'
+            crop_name = 'Paddy'
         elif prediction == 16:
-            crop_name = 'Orange(संतरा)'
+            crop_name = 'Phapar'
         elif prediction == 17:
-            crop_name = 'Papaya(पपीता)'
+            crop_name = 'maize'
         elif prediction == 18:
-            crop_name = 'Pigeonpeas(कबूतर के मटर)'
+            crop_name = 'Tea'
         elif prediction == 19:
-            crop_name = 'Pomegranate(अनार)'
+            crop_name = 'Coffee'
         elif prediction == 20:
-            crop_name = 'Rice(चावल)'
+            crop_name = 'Jute'
         elif prediction == 21:
-            crop_name = 'Watermelon(तरबूज)'
+            crop_name = 'Paddy'
         from datetime import datetime
         print(crop_name)
         payload = {
